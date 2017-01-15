@@ -1,8 +1,8 @@
 package application;
 
-import helloworld.JerseyHelloWorld;
-
 import org.glassfish.jersey.server.ResourceConfig;
+
+import rates.RatesEndPoint;
 
 public class ReactiveJava9Application extends ResourceConfig {
 
@@ -11,6 +11,6 @@ public class ReactiveJava9Application extends ResourceConfig {
      */
     public ReactiveJava9Application() {
 
-    	register(JerseyHelloWorld.class);
+    	register(RatesEndPoint.class);
     }
 }
