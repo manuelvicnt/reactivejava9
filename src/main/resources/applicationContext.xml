@@ -7,4 +7,7 @@
     <bean id="exchangeRatesService" class="rates.services.ExchangeRatesServiceImpl"/>
     <bean id="strongerService" class="stronger.services.StrongerServiceImpl"/>
 
+    <bean class="exceptions.InternalErrorMapper"/>
+	<bean class="exceptions.CurrencyNotFoundMapper"/>
+
 </beans>
