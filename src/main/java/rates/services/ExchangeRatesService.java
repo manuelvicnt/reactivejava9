@@ -1,6 +1,6 @@
 package rates.services;
 
-import rates.model.ExchangeRatesResponse;
+import model.ExchangeRatesResponse;
 import io.reactivex.Single;
 
 public interface ExchangeRatesService {

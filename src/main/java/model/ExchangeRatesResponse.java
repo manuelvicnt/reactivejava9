@@ -1,4 +1,4 @@
-package rates.model;
+package model;
 
 import java.math.BigDecimal;
 import java.util.Map;
