@@ -1,8 +1,8 @@
 package rates.services;
 
+import rates.helper.ExchangeRateResponseHelper;
 import model.ExchangeRatesResponse;
 
-import helper.ExchangeRateResponseHelper;
 import io.reactivex.Single;
 
 public class ExchangeRatesServiceImpl implements ExchangeRatesService {

@@ -9,9 +9,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import exceptions.CurrencyNotFoundException;
+import exceptions.InternalErrorException;
+
+import rates.helper.ExchangeRateResponseHelper;
+
 import model.ExchangeRatesResponse;
 
-import helper.ExchangeRateResponseHelper;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -35,7 +39,7 @@ public class StrongerServiceImpl implements StrongerService {
 						BigDecimal yesterdayRate = t2.getRates().get(counterCurrency);
 						
 						if (todayRate == null || yesterdayRate == null) {
-							throw new Exception();
+							throw new CurrencyNotFoundException();
 						}
 						
 						return todayRate.compareTo(yesterdayRate) > 0;
@@ -64,7 +68,7 @@ public class StrongerServiceImpl implements StrongerService {
 		    		emitter.onComplete();
 		    		
 				} catch (Exception e) {
-					emitter.onError(e);
+					emitter.onError(new InternalErrorException());
 				}
 			}
 		});

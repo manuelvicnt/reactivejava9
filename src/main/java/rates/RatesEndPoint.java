@@ -19,6 +19,9 @@ import model.ExchangeRatesResponse;
 import org.glassfish.jersey.server.ManagedAsync;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import exceptions.CurrencyNotFoundException;
+import exceptions.InternalErrorException;
+
 import rates.responses.RateResponse;
 import rates.services.ExchangeRatesService;
 
@@ -44,21 +47,28 @@ public class RatesEndPoint {
 			public void onSubscribe(Disposable d) {}
 
 			public void onSuccess(ExchangeRatesResponse exchangeRatesResponse) {
-				response.setRate(exchangeRatesResponse.getRates().get(counterCurrency));
+				
+				if (exchangeRatesResponse.getRates().containsKey(counterCurrency)) {
+					response.setRate(exchangeRatesResponse.getRates().get(counterCurrency));					
+				} else {
+		    		async.resume(new CurrencyNotFoundException());
+				}
+				
 				outerLatch.countDown();
 			}
 
 			public void onError(Throwable e) {
+	    		async.resume(e);
 				outerLatch.countDown();
 			}
 		});
 
     	try {
     		if (!outerLatch.await(10, TimeUnit.SECONDS)) {
-    			throw new Exception();
+        		async.resume(new InternalErrorException());
     		}
     	} catch (Exception e) {
-    		
+    		async.resume(new InternalErrorException());
     	}
     	
 		async.resume(response);

@@ -1,4 +1,4 @@
-package helper;
+package rates.helper;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -12,6 +12,9 @@ import java.net.URL;
 import model.ExchangeRatesResponse;
 
 import com.google.gson.Gson;
+
+import exceptions.CurrencyNotFoundException;
+import exceptions.InternalErrorException;
 
 public class ExchangeRateResponseHelper {
 
@@ -36,6 +39,7 @@ public class ExchangeRateResponseHelper {
 		    		
 				} catch (Exception e) {
 					
+					subscriber.onError(new InternalErrorException());
 				}
 			}
 		});		
@@ -57,7 +61,7 @@ public class ExchangeRateResponseHelper {
     		return gson.fromJson(responseString, ExchangeRatesResponse.class);
 
 		} catch (Exception e) {
-			throw new Exception();
+			throw new CurrencyNotFoundException();
 		} finally {
     		in.close();
 		} 

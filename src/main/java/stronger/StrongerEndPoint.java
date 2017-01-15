@@ -19,6 +19,8 @@ import javax.ws.rs.core.MediaType;
 import org.glassfish.jersey.server.ManagedAsync;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import exceptions.InternalErrorException;
+
 import stronger.responses.StrongerResponse;
 import stronger.services.StrongerService;
 
@@ -36,6 +38,7 @@ public class StrongerEndPoint {
     		@PathParam("counterCurrency") final String counterCurrency) {
     	
     	final StrongerResponse response = new StrongerResponse();
+    	
     	final CountDownLatch outerLatch = new CountDownLatch(1);
     	
     	strongerService.isStronger(baseCurrency, counterCurrency).subscribe(new SingleObserver<Boolean>() {
@@ -48,6 +51,7 @@ public class StrongerEndPoint {
 			}
 
 			public void onError(Throwable e) {
+				async.resume(e);
 				outerLatch.countDown();
 			}
 		});
@@ -55,10 +59,10 @@ public class StrongerEndPoint {
 
     	try {
     		if (!outerLatch.await(10, TimeUnit.SECONDS)) {
-    			throw new Exception();
+        		async.resume(new InternalErrorException());
     		}
     	} catch (Exception e) {
-    		
+    		async.resume(new InternalErrorException());
     	}
     	
 		async.resume(response);
