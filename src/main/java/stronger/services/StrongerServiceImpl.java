@@ -9,10 +9,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import exceptions.CurrencyNotFoundException;
 import exceptions.InternalErrorException;
 
-import rates.helper.ExchangeRateResponseHelper;
+import rates.adapter.ExchangeRatesAdapter;
 
 import model.ExchangeRatesResponse;
 
@@ -27,10 +29,18 @@ public class StrongerServiceImpl implements StrongerService {
 	private static final String HISTORY_RATE_BASE_END_POINT = "http://api.fixer.io/%slatest?base=%s";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
+	private ExchangeRatesAdapter ratesAdapter;
+	
+	@Autowired
+	public StrongerServiceImpl(ExchangeRatesAdapter exchangeRatesAdapter) {
+		
+		this.ratesAdapter = exchangeRatesAdapter;
+	}
+
 	public Single<Boolean> isStronger(final String baseCurrency, final String counterCurrency) {
 
 		return Observable.zip(
-				ExchangeRateResponseHelper.getExchangeRates(baseCurrency).toObservable(), 
+				ratesAdapter.getExchangeRates(baseCurrency).toObservable(), 
 				yesterdayRate(baseCurrency), 
 				new BiFunction<ExchangeRatesResponse, ExchangeRatesResponse, Boolean>() {
 					public Boolean apply(ExchangeRatesResponse t1, ExchangeRatesResponse t2) throws Exception {
@@ -62,7 +72,7 @@ public class StrongerServiceImpl implements StrongerService {
 		    		con.setRequestMethod("GET");
 
 		    		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		    		ExchangeRatesResponse response = ExchangeRateResponseHelper.readRatesFromResponse(in);
+		    		ExchangeRatesResponse response = ratesAdapter.readRatesFromResponse(in);
 
 		    		emitter.onNext(response);
 		    		emitter.onComplete();

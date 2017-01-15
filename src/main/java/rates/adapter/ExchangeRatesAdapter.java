@@ -1,4 +1,4 @@
-package rates.helper;
+package rates.adapter;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -16,11 +16,11 @@ import com.google.gson.Gson;
 import exceptions.CurrencyNotFoundException;
 import exceptions.InternalErrorException;
 
-public class ExchangeRateResponseHelper {
+public class ExchangeRatesAdapter {
 
 	private static final String EXCHANGE_RATE_BASE_END_POINT = "http://api.fixer.io/latest?base=%s";
 
-	public static Single<ExchangeRatesResponse> getExchangeRates(final String base) {
+	public Single<ExchangeRatesResponse> getExchangeRates(final String base) {
 		
 		return Single.create(new SingleOnSubscribe<ExchangeRatesResponse>() {
 
@@ -34,7 +34,7 @@ public class ExchangeRateResponseHelper {
 		    		con.setRequestMethod("GET");
 
 		    		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		    		ExchangeRatesResponse response = ExchangeRateResponseHelper.readRatesFromResponse(in);
+		    		ExchangeRatesResponse response = readRatesFromResponse(in);
 		    		subscriber.onSuccess(response);
 		    		
 				} catch (Exception e) {
@@ -45,7 +45,7 @@ public class ExchangeRateResponseHelper {
 		});		
 	}	
 
-	public static ExchangeRatesResponse readRatesFromResponse(BufferedReader in) throws Exception {
+	public ExchangeRatesResponse readRatesFromResponse(BufferedReader in) throws Exception {
 		
 		String inputLine;
 		StringBuffer response = new StringBuffer();
