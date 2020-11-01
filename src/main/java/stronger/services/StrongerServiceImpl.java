@@ -26,7 +26,7 @@ import io.reactivex.functions.BiFunction;
 
 public class StrongerServiceImpl implements StrongerService {
 
-	private static final String HISTORY_RATE_BASE_END_POINT = "http://api.fixer.io/%slatest?base=%s";
+	private static final String HISTORY_RATE_BASE_END_POINT = "http://api.fixer.io/%s?base=%s";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	private ExchangeRatesAdapter ratesAdapter;
